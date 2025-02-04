@@ -53,7 +53,7 @@ The project relies on:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/nova_clinic_scheduler.git
+   git clone https://github.com/jphamgithub/stellar_appointment_system.git
    cd nova_clinic_scheduler
    ```
 
