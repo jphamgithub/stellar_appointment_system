@@ -77,20 +77,9 @@ python client.py cancel 123
 python client.py view_today
 ```
 
-This approach makes it easier for users to interact with the microservice without having to construct long JSON messages manually.
-
 ---
 
 ## Future Enhancements
 - Currently, the system uses **ZeroMQ**. Adding an **HTTP API** (like Flask or FastAPI) would allow easier testing with curl.
 - Additional features such as rescheduling appointments could be added.
 - Expanding stored appointment details, such as location or assigned personnel.
-
----
-
-## Repository
-Repo Link: [Stellar Appointment System](https://github.com/jphamgithub/stellar_appointment_system.git)
-
----
-
-This project is designed to be simple and efficient. Run the server, send requests through `client.py`, and manage appointments easily.
