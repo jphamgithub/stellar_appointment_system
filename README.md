@@ -1,16 +1,16 @@
 
-# **Stellar Appointment System**
+# Stellar Appointment System
 
-This is a simple microservice that lets you schedule, cancel, and view appointments. It uses **ZeroMQ** for communication and **SQLite** to store the data. The idea is to make a lightweight and easy-to-run system for handling appointments.
+This is a simple microservice that lets you schedule, cancel, and view appointments. It uses **ZeroMQ** for communication and **SQLite** to store the data. The goal is to provide a lightweight and easy-to-run system for handling appointments.
 
 ---
 
-## **GitHub Repository**
+## GitHub Repository
 Repo Link: [Stellar Appointment System](https://github.com/jphamgithub/stellar_appointment_system.git)
-But you're here now?
+
 ---
 
-## **What This Does**
+## What This Does
 - Lets you **schedule** an appointment by providing a name, date, and time.
 - Lets you **cancel** an appointment by giving its ID.
 - Lets you **view all** appointments for today.
@@ -19,21 +19,21 @@ It's all done through **ZeroMQ messages** instead of an API, so you need to send
 
 ---
 
-## **How to Set It Up**
+## How to Set It Up
 
-### **1. Install Python Stuff**
+### 1. Install Required Packages
 Make sure you have Python 3.7+ installed, then run:
 ```bash
 pip install pyzmq sqlite3
 ```
 
-### **2. Set Up the Database**
+### 2. Set Up the Database
 Run this to create the database file (`appointments.db`):
 ```bash
 python -c "import database; database.init_db()"
 ```
 
-### **3. Start the Microservice**
+### 3. Start the Microservice
 Run the server so it starts listening for appointment requests:
 ```bash
 python scheduler.py
@@ -41,38 +41,39 @@ python scheduler.py
 
 ---
 
-## **How to Send Requests**
+## How to Send Requests
 
-### **Using Python (One-Liner Command)**
-Instead of making an API call, you talk to the service through **ZeroMQ**. Here are some quick one-liners to test it:
+Instead of using long one-liner commands, use `client.py` to simplify sending requests.
 
-#### **Schedule an Appointment**
+### 1. Schedule an Appointment
 ```bash
-python -c "import zmq, json; s=zmq.Context().socket(zmq.REQ); s.connect('tcp://localhost:5555'); s.send_string(json.dumps({'action': 'schedule', 'patient': 'John Doe', 'date': '2025-02-10', 'time': '14:30'})); print(s.recv_string())"
+python client.py schedule "John Doe" "2025-02-10" "14:30"
 ```
 
-#### **Cancel an Appointment**
+### 2. Cancel an Appointment
 ```bash
-python -c "import zmq, json; s=zmq.Context().socket(zmq.REQ); s.connect('tcp://localhost:5555'); s.send_string(json.dumps({'action': 'cancel', 'appointment_id': 123})); print(s.recv_string())"
+python client.py cancel 123
 ```
 
-#### **View Today’s Appointments**
+### 3. View Today’s Appointments
 ```bash
-python -c "import zmq, json; s=zmq.Context().socket(zmq.REQ); s.connect('tcp://localhost:5555'); s.send_string(json.dumps({'action': 'view_today'})); print(s.recv_string())"
+python client.py view_today
 ```
+
+This approach makes it easier for users to interact with the microservice without having to construct long JSON messages manually.
 
 ---
 
-## **Future Enhancements (Maybe?)**
-- Right now, it's just using **ZeroMQ**, but adding an **HTTP API** (like Flask or FastAPI) would make it easier to test with curl.
-- Could add more features like rescheduling an appointment instead of just canceling.
-- Maybe store more appointment details, like location or doctor name?
+## Future Enhancements
+- Currently, the system uses **ZeroMQ**. Adding an **HTTP API** (like Flask or FastAPI) would allow easier testing with curl.
+- Additional features such as rescheduling appointments could be added.
+- Expanding stored appointment details, such as location or assigned personnel.
 
 ---
 
-## **Repo Again**
-📌 [Stellar Appointment System](https://github.com/jphamgithub/stellar_appointment_system.git)
+## Repository
+Repo Link: [Stellar Appointment System](https://github.com/jphamgithub/stellar_appointment_system.git)
 
 ---
 
-That's it! Just run the server, send some messages, and you should see appointments being saved and retrieved. Let me know if you have any issues! 🚀
+This project is designed to be simple and efficient. Run the server, send requests through `client.py`, and manage appointments easily.
