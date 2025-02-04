@@ -19,6 +19,23 @@ It's all done through **ZeroMQ messages** instead of an API, so you need to send
 
 ---
 
+## File Structure
+
+```
+stellar_appointment_system/
+├── README.md               # Project documentation (this file)
+├── scheduler.py            # Main microservice code (ZeroMQ server logic)
+├── database.py             # SQLite database setup and interaction functions
+├── client.py               # Client script for sending appointment requests
+├── schema.sql              # SQL script to initialize the SQLite database
+├── requirements.txt        # Required Python dependencies
+└── tests/
+    ├── test_scheduler.py   # Unit tests for the microservice
+    ├── test_database.py    # Unit tests for SQLite database functions
+```
+
+---
+
 ## How to Set It Up
 
 ### 1. Install Required Packages
