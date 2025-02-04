@@ -8,6 +8,18 @@ This is a simple microservice that lets you schedule, cancel, and view appointme
 ## GitHub Repository
 Repo Link: [Stellar Appointment System](https://github.com/jphamgithub/stellar_appointment_system.git)
 
+## Set up this repo
+
+### Clone the repository
+```
+git clone https://github.com/jphamgithub/stellar_appointment_system.git
+```
+
+### Navigate into the project directory
+```
+cd stellar_appointment_system
+```
+
 ---
 
 ## What This Does
