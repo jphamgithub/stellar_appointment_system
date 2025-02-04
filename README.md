@@ -76,12 +76,12 @@ Instead of using long one-liner commands, use `client.py` to simplify sending re
 
 ### 1. Schedule an Appointment
 ```bash
-python client.py schedule "John Doe" "2025-02-10" "14:30"
+python client.py schedule "555555" "2025-02-10" "14:30"
 ```
 
 ### 2. Cancel an Appointment
 ```bash
-python client.py cancel 123
+python client.py cancel "appointment_id"
 ```
 
 ### 3. View Today’s Appointments
