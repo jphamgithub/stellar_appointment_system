@@ -1,0 +1,11 @@
+
+# Requirements for Stellar Appointment System
+
+# Flask is used for creating the REST API endpoints
+flask
+
+# PyZMQ is required for ZeroMQ communication between the microservice and the API
+pyzmq
+
+
+# To view prettier print outs of JQ

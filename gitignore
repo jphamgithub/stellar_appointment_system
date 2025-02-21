@@ -1,0 +1,74 @@
+
+# =========================================
+# 📁 PYTHON FILES & ENVIRONMENT EXCLUSIONS
+# =========================================
+
+# Byte-compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtual environment folders
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# SQLite database files
+# 🔒 Exclude the database file to avoid sharing sensitive data
+appointments.db
+
+# =========================================
+# 🧪 TESTING & COVERAGE REPORT FILES
+# =========================================
+
+# Coverage reports from testing
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.tox/
+.nox/
+.pytest_cache/
+
+# =========================================
+# ⚙️ PROJECT SETTINGS FILES (IDE Specific)
+# =========================================
+
+# VS Code settings
+.vscode/
+
+# PyCharm project settings
+.idea/
+
+# =========================================
+# 💾 SYSTEM FILES
+# =========================================
+
+# macOS-specific files
+.DS_Store
+
+# Windows-specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================================
+# 🔍 MISCELLANEOUS
+# =========================================
+
+# Log files
+*.log
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Backup files
+*.bak
+*.swp
+*.swo
