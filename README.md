@@ -11,6 +11,11 @@ This is a simple microservice that lets you schedule, cancel, and view appointme
 - 📅 **View today's appointments** to see your schedule.
 - 📜 **View all appointments** across all dates.
 
+## UML Diagram to understand the flow of the programs
+
+![UML_sequence_diagram](images/UML_sequence_diagram.png)
+
+
 You can send requests using simple `curl` commands and save responses directly into variables in your code.
 
 ---
@@ -136,18 +141,68 @@ echo $ALL_APPOINTMENTS
 ```
 
 ---
+## How to use the Test Client to run all of the above using python code instead
 
+1. **Start Services:**
+   - Terminal 1: `python3 scheduler.py`
+   - Terminal 2: `python3 api.py`
+
+2. **Run the Test Client:**
+   - Terminal 3: `python3 test_client.py`
+
+Sample Output
+```
+jpham@JakeZPMMachine:$ python3 test_client.py 
+Scheduling an appointment for John Doe on 2025-02-25 at 10:00 AM
+{
+    "appointment_id": 20,
+    "status": "success"
+}
+
+Viewing today's appointments:
+{
+    "appointments": []
+}
+
+Viewing all scheduled appointments:
+{
+    "appointments": [
+        {
+            "date": "2025-02-25",
+            "id": 20,
+            "patient": "John Doe",
+            "time": "10:00"
+        }
+    ]
+}
+
+ Canceling appointment with ID 20
+{
+    "message": "Appointment 20 canceled.",
+    "status": "success"
+}
+
+Viewing all appointments after cancellation:
+{
+    "appointments": []
+}
+```
+
+---
 ## 📂 Project Structure
 
 ```
 stellar_appointment_system/
-├── README.md               # Project documentation (this file)
-├── scheduler.py            # ZeroMQ server for handling appointments
-├── database.py             # SQLite database functions
-├── api.py                  # Flask API for easy request handling
-├── schema.sql              # SQL schema for initializing the database
-├── requirements.txt        # Required dependencies
-└── tests/                  # Unit tests for core functionality
+├── images                     # Image folder for README
+├──── terminalsetup.png        # Image terminals
+├──── UML_sequence_diagram.png # Image UML
+├── api.py                     # Flask API for easy request handling
+├── database.py                # SQLite database functions
+├── README.md                  # Project documentation (this file)
+├── requirements.txt           # Required dependencies
+├── runservice.sh              # set up services with 1 terminal
+├── scheduler.py               # ZeroMQ server for handling appointmentse
+└── test_client.py             # Test Client to run all code
 ```
 
 ---
@@ -194,13 +249,6 @@ curl -X GET http://localhost:5000/view_all
 
 ---
 
-## 💡 Future Enhancements
-- Add rescheduling functionality.
-- Extend stored appointment details (location, assigned personnel).
-- Implement user authentication.
-
----
-
 ## 🛠️ Optional: Installing `jq` for Pretty JSON Output
 
 To format the JSON output from `curl` requests in a more readable way, you can use `jq`, a powerful command-line JSON processor.
@@ -235,3 +283,10 @@ curl -X GET http://localhost:5000/view_all | jq '.'
 ```
 
 This will display the JSON response in a well-formatted, easy-to-read structure.
+
+---
+
+## 💡 Future Enhancements
+- Add rescheduling functionality.
+- Extend stored appointment details (location, assigned personnel).
+- Implement user authentication.
