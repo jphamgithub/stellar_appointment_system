@@ -196,6 +196,7 @@ stellar_appointment_system/
 ├── images                     # Image folder for README
 ├──── terminalsetup.png        # Image terminals
 ├──── UML_sequence_diagram.png # Image UML
+├── .gitignore                 # ignore the db file, pycache and other files not to go to github
 ├── api.py                     # Flask API for easy request handling
 ├── database.py                # SQLite database functions
 ├── README.md                  # Project documentation (this file)
