@@ -39,6 +39,8 @@ def schedule_appointment(patient, date, time):
     """
     conn = sqlite3.connect('appointments.db')
     c = conn.cursor()
+    # CALL OUT!!!
+    # 04 - Insert a new appointment into the SQLite database
     c.execute('INSERT INTO appointments (patient, date, time) VALUES (?, ?, ?)', (patient, date, time))
     appointment_id = c.lastrowid
     conn.commit()

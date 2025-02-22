@@ -41,7 +41,12 @@ def schedule():
         "date": data['date'],
         "time": data['time']
     }
+    # CALL OUT!!!
+    # 02 - Send the request data to the scheduler microservice using ZeroMQ
     socket.send_string(json.dumps(request_data))
+    
+    # CALL OUT!!!
+    # 06 - Receive the response from scheduler.py and send it back as JSON
     response = json.loads(socket.recv_string())
     return jsonify(response)
 

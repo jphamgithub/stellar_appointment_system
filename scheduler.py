@@ -40,6 +40,8 @@ while True:
         patient = request.get("patient")
         date = request.get("date")
         time = request.get("time")
+        # CALL OUT!!!
+        # 03 - Call the database function to schedule a new appointment
         appointment_id = database.schedule_appointment(patient, date, time)
         response = {"status": "success", "appointment_id": appointment_id}
     elif action == "cancel":
@@ -85,5 +87,6 @@ while True:
         """
         response = {"status": "error", "message": "Invalid action."}
 
-    # Send the response back to the client
+    # CALL OUT!!!
+    # 05 - Send the processed response back to api.py through ZeroMQ
     socket.send_string(json.dumps(response))

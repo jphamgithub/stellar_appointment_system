@@ -35,6 +35,8 @@ def schedule_appointment(patient, date, time):
         "date": date,
         "time": time
     }
+    # CALL OUT!!!
+    # 01 - Send a POST request to the Flask API with appointment details
     response = requests.post(f"{BASE_URL}/schedule", json=payload)
     return response.json()
 
@@ -77,7 +79,12 @@ def view_all_appointments():
 if __name__ == "__main__":
     # Demonstrate scheduling an appointment
     print("Scheduling an appointment for John Doe on 2025-02-25 at 10:00 AM")
+    # CALL OUT!!!
+    # 00 - Declare a variable and call a function to schedule appointment 
+    # You will build something like this in your code base!
     scheduled_response = schedule_appointment("John Doe", "2025-02-25", "10:00")
+    # CALL OUT!!!
+    # 07 - Display the response received from the API to confirm success
     pretty_print(scheduled_response)
 
     # Demonstrate viewing today's appointments
