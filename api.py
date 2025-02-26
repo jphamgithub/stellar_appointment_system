@@ -32,11 +32,13 @@ def schedule():
     }
     """
     data = request.get_json()
+    print("Received data:", data) #debug
     if not data or not all(k in data for k in ('patient', 'date', 'time')):
         return jsonify({'status': 'error', 'message': 'Missing required fields.'}), 400
 
     request_data = {
         "action": "schedule",
+        "p_id": data['p_id'],
         "patient": data['patient'],
         "date": data['date'],
         "time": data['time']
@@ -110,5 +112,5 @@ if __name__ == '__main__':
 
     The server runs on host 0.0.0.0 and port 5000 by default.
     """
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5678)
 
