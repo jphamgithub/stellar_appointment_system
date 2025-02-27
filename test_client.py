@@ -8,9 +8,12 @@ It shows examples for scheduling, canceling, and viewing appointments (both toda
 
 import requests
 import json
+import os
+
 
 # Base URL for the Flask API
-BASE_URL = "http://localhost:5000"
+API_PORT = os.getenv("API_PORT", "5678")
+BASE_URL = f"http://localhost:{API_PORT}"
 
 def pretty_print(response):
     """
@@ -19,11 +22,11 @@ def pretty_print(response):
     """
     print(json.dumps(response, indent=4))
 
-
-def schedule_appointment(patient, date, time):
+def schedule_appointment(p_id, patient, date, time):
     """
     @brief Sends a request to schedule an appointment.
     
+    @param p_id: Unique ID of the patient.
     @param patient: Name of the patient.
     @param date: Date of the appointment (YYYY-MM-DD).
     @param time: Time of the appointment (HH:MM format).
@@ -31,6 +34,7 @@ def schedule_appointment(patient, date, time):
     @return: Response from the microservice.
     """
     payload = {
+        "p_id": p_id,
         "patient": patient,
         "date": date,
         "time": time
@@ -39,7 +43,6 @@ def schedule_appointment(patient, date, time):
     # 01 - Send a POST request to the Flask API with appointment details
     response = requests.post(f"{BASE_URL}/schedule", json=payload)
     return response.json()
-
 
 def cancel_appointment(appointment_id):
     """
@@ -77,12 +80,14 @@ def view_all_appointments():
 
 
 if __name__ == "__main__":
+    print(f"Using API at {BASE_URL}\n")
+    
     # Demonstrate scheduling an appointment
-    print("Scheduling an appointment for John Doe on 2025-02-25 at 10:00 AM")
+    print("Scheduling an appointment for John Doe, patient ID 123, on 2025-02-26 at 10:00 AM")
     # CALL OUT!!!
     # 00 - Declare a variable and call a function to schedule appointment 
     # You will build something like this in your code base!
-    scheduled_response = schedule_appointment("John Doe", "2025-02-25", "10:00")
+    scheduled_response = schedule_appointment(123, "John Doe", "2025-02-26", "10:00")
     # CALL OUT!!!
     # 07 - Display the response received from the API to confirm success
     pretty_print(scheduled_response)
@@ -92,7 +97,7 @@ if __name__ == "__main__":
     today_appointments = view_todays_appointments()
     pretty_print(today_appointments)
 
-    # Demonstrate viewing all appointments
+    # Demonstrate viewing all scheduled appointments
     print("\nViewing all scheduled appointments:")
     all_appointments = view_all_appointments()
     pretty_print(all_appointments)

@@ -7,11 +7,15 @@
 import zmq
 import json
 import database
+import os
+from datetime import datetime
+
+ZMQ_PORT = os.getenv("ZMQ_PORT", "5555")  # Default to 5555 if not set
 
 # Setup ZeroMQ server for handling appointment requests
 context = zmq.Context()
 socket = context.socket(zmq.REP)
-socket.bind("tcp://*:5555")
+socket.bind(f"tcp://*:{ZMQ_PORT}")  # Use the configured port
 
 # Initialize the SQLite database
 database.init_db()
@@ -29,21 +33,23 @@ while True:
         """
         @brief Handles scheduling of an appointment.
 
-        Extracts patient name, date, and time from the request and schedules an appointment.
-
-        @param patient A string containing the patient's name.
-        @param date A string representing the appointment date (YYYY-MM-DD).
-        @param time A string representing the appointment time (HH:MM format).
+        Extracts patient ID, name, date, and time from the request and schedules an appointment.
 
         @return JSON response with a success status and newly created appointment ID.
         """
+        p_id = request.get("p_id")  # Extract patient ID
         patient = request.get("patient")
         date = request.get("date")
         time = request.get("time")
-        # CALL OUT!!!
-        # 03 - Call the database function to schedule a new appointment
-        appointment_id = database.schedule_appointment(patient, date, time)
-        response = {"status": "success", "appointment_id": appointment_id}
+
+        # Ensure p_id is provided
+        if not p_id:
+            response = {"status": "error", "message": "Missing patient ID."}
+        else:
+            # CALL OUT!!!
+            # 03 - Call the database function to schedule a new appointment
+            appointment_id = database.schedule_appointment(p_id, patient, date, time)
+            response = {"status": "success", "appointment_id": appointment_id}
     elif action == "cancel":
         """
         @brief Handles appointment cancellation.
@@ -67,9 +73,15 @@ while True:
         """
         @brief Retrieves all of today's appointments.
 
-        @return JSON response containing a list of appointments scheduled for today.
+        @return JSON response containing a list of appointments scheduled for today, including the date.
         """
         appointments = database.get_todays_appointments()
+        today_date = datetime.now().strftime('%Y-%m-%d')  # Get today's date
+
+        # Modify each appointment to include the date explicitly
+        for appt in appointments:
+            appt["date"] = today_date  
+
         response = {"appointments": appointments}
     elif action == "view_all":
         """

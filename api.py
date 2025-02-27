@@ -6,39 +6,34 @@
 from flask import Flask, request, jsonify
 import zmq
 import json
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
 
+ZMQ_PORT = os.getenv("ZMQ_PORT", "5555")  # Default to 5555 if not set
+
 # Setup ZeroMQ client for communication with the microservice
 context = zmq.Context()
 socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:5555")
+socket.connect(f"tcp://localhost:{ZMQ_PORT}")  # Use the configured port
 
 @app.route('/schedule', methods=['POST'])
 def schedule():
     """
     @brief Schedules a new appointment.
 
-    This endpoint accepts patient details including name, date, and time to schedule an appointment.
-    
-    @return JSON response containing the status of the request and the appointment ID if successful.
+    This endpoint accepts patient details including patient ID, name, date, and time.
 
-    Example request:
-    {
-        "patient": "John Doe",
-        "date": "2025-02-10",
-        "time": "14:30"
-    }
+    @return JSON response containing the status of the request and the appointment ID if successful.
     """
     data = request.get_json()
-    print("Received data:", data) #debug
-    if not data or not all(k in data for k in ('patient', 'date', 'time')):
+    if not data or not all(k in data for k in ('p_id', 'patient', 'date', 'time')):
         return jsonify({'status': 'error', 'message': 'Missing required fields.'}), 400
 
     request_data = {
         "action": "schedule",
-        "p_id": data['p_id'],
+        "p_id": data['p_id'],  # Ensure patient ID is included
         "patient": data['patient'],
         "date": data['date'],
         "time": data['time']
@@ -106,11 +101,16 @@ def view_all():
 
 # Make sure this is left at the bottom if you add more routes!!
 
+import os
+
 if __name__ == '__main__':
     """
-    @brief Starts the Flask API server.
+    @brief Starts the Flask API server with a customizable port.
 
-    The server runs on host 0.0.0.0 and port 5000 by default.
+    By default, the server runs on port 5678, but it can be overridden using an environment variable
+    or command-line argument.
     """
-    app.run(host='0.0.0.0', port=5678)
+    port = int(os.getenv("API_PORT", 5678))  # Get port from environment variable, default to 5678
+    app.run(host='0.0.0.0', port=port)
+
 

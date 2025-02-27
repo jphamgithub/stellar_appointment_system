@@ -59,16 +59,16 @@ python3 -c "import database; database.init_db()"
 - 🔌 **Start the Microservice**:
 ```bash
 #Open Terminal 1
-python3 scheduler.py
+ZMQ_PORT=5555 python3 scheduler.py
 ```
 - 🚀 **Run the Flask API** (in a separate terminal):
 ```bash
 #Open Terminal 2
-# ⚠️ WARNING: This server runs on port 5000 by default.
-# I could change in a future revision or you could do find/replace across code base
+# ⚠️ WARNING: This server runs on port 5678 by default.
 # 💡 Reminder: Flask will show a warning that it's running in development mode.
 # This is normal for local testing but should NOT be used for production deployment.
-python3 api.py
+# You can customize port!
+ZMQ_PORT=5555 API_PORT=5678 python3 api.py
 ```
 
 ##### **Quick Start with One Command**
@@ -78,7 +78,7 @@ Run both the Scheduler and Flask API simultaneously with the provided script:
 chmod +x runservice.sh
 
 # Run both services at once
-./runservice.sh
+API_PORT=8080 ZMQ_PORT=6000 ./runservice.sh
 ```
 
 If you lose track of the PID's to kill, this will show you the PID's to kill
@@ -93,50 +93,50 @@ ps aux | grep python
 ### 📅 1. Schedule an Appointment
 Command:
 ```bash
-curl -X POST http://localhost:5000/schedule   -H "Content-Type: application/json"   -d '{"patient": "John Doe", "date": "2025-02-10", "time": "14:30"}'
+curl -X POST http://localhost:5678/schedule   -H "Content-Type: application/json"   -d '{"patient": "John Doe", "date": "2025-02-10", "time": "14:30"}'
 ```
 
 Save the response to a variable in bash:
 ```bash
-RESPONSE=$(curl -s -X POST http://localhost:5000/schedule   -H "Content-Type: application/json"   -d '{"patient": "John Doe", "date": "2025-02-10", "time": "14:30"}')
+RESPONSE=$(curl -s -X POST http://localhost:5678/schedule   -H "Content-Type: application/json"   -d '{"patient": "John Doe", "date": "2025-02-10", "time": "14:30"}')
 echo $RESPONSE
 ```
 
 ### ❌ 2. Cancel an Appointment
 Command:
 ```bash
-curl -X POST http://localhost:5000/cancel   -H "Content-Type: application/json"   -d '{"appointment_id": 123}'
+curl -X POST http://localhost:5678/cancel   -H "Content-Type: application/json"   -d '{"appointment_id": 123}'
 ```
 
 Save the response:
 ```bash
-CANCEL_RESPONSE=$(curl -s -X POST http://localhost:5000/cancel   -H "Content-Type: application/json"   -d '{"appointment_id": 123}')
+CANCEL_RESPONSE=$(curl -s -X POST http://localhost:5678/cancel   -H "Content-Type: application/json"   -d '{"appointment_id": 123}')
 echo $CANCEL_RESPONSE
 ```
 
 ### 📋 3. View Today's Appointments
 Command:
 ```bash
-curl -X GET http://localhost:5000/view_today
+curl -X GET http://localhost:5678/view_today
 ```
 
 Save the response:
 ```bash
-TODAY_APPOINTMENTS=$(curl -s -X GET http://localhost:5000/view_today)
+TODAY_APPOINTMENTS=$(curl -s -X GET http://localhost:5678/view_today)
 echo $TODAY_APPOINTMENTS
 ```
 
 ### 📜 4. View All Appointments
 Command:
 ```bash
-curl -X GET http://localhost:5000/view_all
+curl -X GET http://localhost:5678/view_all
 # If you have jq installed to see it "prettier"
-curl -X GET http://localhost:5000/view_all | jq '.'
+curl -X GET http://localhost:5678/view_all | jq '.'
 ```
 
 Save the response:
 ```bash
-ALL_APPOINTMENTS=$(curl -s -X GET http://localhost:5000/view_all)
+ALL_APPOINTMENTS=$(curl -s -X GET http://localhost:5678/view_all)
 echo $ALL_APPOINTMENTS
 ```
 
@@ -144,11 +144,41 @@ echo $ALL_APPOINTMENTS
 ## How to use the Test Client to run all of the above using python code instead
 
 1. **Start Services:**
-   - Terminal 1: `python3 scheduler.py`
-   - Terminal 2: `python3 api.py`
+   - Terminal 1: `ZMQ_PORT=5555 python3 scheduler.py`
+   - Terminal 2: `API_PORT=5678 ZMQ_PORT=5555 python3 api.py`
+
+FYI: If you forget what ports or want to confirm the ports you chose you can run `netstat -tulnp | grep python` in a free terminal!
+
+```bash
+# may need to install sudo apt install net-tools
+jpham@JakeZPMMachine:$ netstat -tulnp | grep python
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 0.0.0.0:5678            0.0.0.0:*               LISTEN      1255/pytho3        
+tcp        0      0 0.0.0.0:5555            0.0.0.0:*               LISTEN      1236/pytho3
+```
 
 2. **Run the Test Client:**
-   - Terminal 3: `python3 test_client.py`
+   - Terminal 3: `API_PORT=6789 python3 test_client.py`
+
+
+## How to use the Test Client with different ports
+If you need to run the services on different ports, you can specify them like this:
+
+### Start the scheduler with a custom port
+```
+ZMQ_PORT=6000 python3 scheduler.py
+```
+
+# Start the API with a custom port and point it to the scheduler's new port
+```
+API_PORT=6789 ZMQ_PORT=6000 python3 api.py
+```
+
+# Run the test client, which will use API_PORT from the environment
+```
+API_PORT=6789 python3 test_client.py
+```
 
 Sample Output
 ```
@@ -197,7 +227,7 @@ stellar_appointment_system/
 ├──── terminalsetup.png        # Image terminals
 ├──── UML_sequence_diagram.png # Image UML
 ├── .gitignore                 # ignore the db file, pycache and other files not to go to github
-├── api.py                     # Flask API for easy request handling
+├── api.py                     # Flask API (default: 5678, configurable via API_PORT)
 ├── database.py                # SQLite database functions
 ├── README.md                  # Project documentation (this file)
 ├── requirements.txt           # Required dependencies
@@ -245,7 +275,7 @@ def view_all():
 ### 4. **Test Using `curl`**
 - Use `curl` commands to test the new functionality:
 ```bash
-curl -X GET http://localhost:5000/view_all
+curl -X GET http://localhost:5678/view_all
 ```
 
 ---
@@ -280,7 +310,7 @@ choco install jq
 Once installed, you can format your JSON output using `jq`:
 
 ```bash
-curl -X GET http://localhost:5000/view_all | jq '.'
+curl -X GET http://localhost:5678/view_all | jq '.'
 ```
 
 This will display the JSON response in a well-formatted, easy-to-read structure.

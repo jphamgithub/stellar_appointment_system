@@ -11,14 +11,14 @@ def init_db():
     """
     @brief Initializes the SQLite database and creates the appointments table if it doesn't exist.
 
-    This function establishes a connection to the SQLite database and ensures that the 'appointments'
-    table exists with the necessary schema.
+    This function ensures that the 'appointments' table has an ID, patient ID, name, date, and time.
     """
     conn = sqlite3.connect('appointments.db')
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS appointments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            p_id INTEGER NOT NULL,  -- New column for patient ID
             patient TEXT NOT NULL,
             date TEXT NOT NULL,
             time TEXT NOT NULL
@@ -27,10 +27,11 @@ def init_db():
     conn.commit()
     conn.close()
 
-def schedule_appointment(patient, date, time):
+def schedule_appointment(p_id, patient, date, time):
     """
     @brief Schedules a new appointment and saves it in the database.
 
+    @param p_id An integer representing the patient ID.
     @param patient A string containing the name of the patient.
     @param date A string representing the appointment date (YYYY-MM-DD).
     @param time A string representing the appointment time (HH:MM format).
@@ -39,12 +40,14 @@ def schedule_appointment(patient, date, time):
     """
     conn = sqlite3.connect('appointments.db')
     c = conn.cursor()
-    # CALL OUT!!!
-    # 04 - Insert a new appointment into the SQLite database
-    c.execute('INSERT INTO appointments (patient, date, time) VALUES (?, ?, ?)', (patient, date, time))
+    
+    # Insert appointment into the database with patient ID
+    c.execute('INSERT INTO appointments (p_id, patient, date, time) VALUES (?, ?, ?, ?)', (p_id, patient, date, time))
+    
     appointment_id = c.lastrowid
     conn.commit()
     conn.close()
+    
     return appointment_id
 
 def cancel_appointment(appointment_id):
@@ -67,15 +70,15 @@ def get_todays_appointments():
     """
     @brief Retrieves all appointments scheduled for today.
 
-    This function queries the SQLite database for all appointments with today's date.
-
-    @return A list of dictionaries, each containing the appointment ID, patient name, and appointment time.
+    @return A list of dictionaries, each containing appointment ID, patient ID, patient name, time, and date.
     """
     today_date = datetime.now().strftime('%Y-%m-%d')
     conn = sqlite3.connect('appointments.db')
     c = conn.cursor()
-    c.execute('SELECT id, patient, time FROM appointments WHERE date = ?', (today_date,))
-    appointments = [{'id': row[0], 'patient': row[1], 'time': row[2]} for row in c.fetchall()]
+    c.execute('SELECT id, p_id, patient, time FROM appointments WHERE date = ?', (today_date,))
+    
+    appointments = [{'id': row[0], 'p_id': row[1], 'patient': row[2], 'time': row[3], 'date': today_date} for row in c.fetchall()]
+    
     conn.close()
     return appointments
 
@@ -83,12 +86,14 @@ def get_all_appointments():
     """
     @brief Retrieves all appointments from the database.
 
-    @return A list of all scheduled appointments with their ID, patient name, date, and time.
+    @return A list of all scheduled appointments with their ID, patient ID, patient name, date, and time.
     """
     conn = sqlite3.connect('appointments.db')
     c = conn.cursor()
-    c.execute('SELECT id, patient, date, time FROM appointments')
-    appointments = [{'id': row[0], 'patient': row[1], 'date': row[2], 'time': row[3]} for row in c.fetchall()]
+    c.execute('SELECT id, p_id, patient, date, time FROM appointments')
+    
+    appointments = [{'id': row[0], 'p_id': row[1], 'patient': row[2], 'date': row[3], 'time': row[4]} for row in c.fetchall()]
+    
     conn.close()
     return appointments
 
