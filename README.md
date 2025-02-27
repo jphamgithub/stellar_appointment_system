@@ -170,45 +170,56 @@ If you need to run the services on different ports, you can specify them like th
 ZMQ_PORT=6000 python3 scheduler.py
 ```
 
-# Start the API with a custom port and point it to the scheduler's new port
+### Start the API with a custom port and point it to the scheduler's new port
 ```
 API_PORT=6789 ZMQ_PORT=6000 python3 api.py
 ```
 
-# Run the test client, which will use API_PORT from the environment
+### Run the test client, which will use API_PORT from the environment
 ```
 API_PORT=6789 python3 test_client.py
 ```
 
 Sample Output
 ```
-jpham@JakeZPMMachine:$ python3 test_client.py 
-Scheduling an appointment for John Doe on 2025-02-25 at 10:00 AM
+jpham@JakeZPMMachine:$ API_PORT=6789 python3 test_client.py
+Using API at http://localhost:6789
+
+Scheduling an appointment for John Doe, patient ID 123, on 2025-02-26 at 10:00 AM
 {
-    "appointment_id": 20,
+    "appointment_id": 11,
     "status": "success"
 }
 
 Viewing today's appointments:
 {
-    "appointments": []
-}
-
-Viewing all scheduled appointments:
-{
     "appointments": [
         {
-            "date": "2025-02-25",
-            "id": 20,
+            "date": "2025-02-26",
+            "id": 11,
+            "p_id": 123,
             "patient": "John Doe",
             "time": "10:00"
         }
     ]
 }
 
- Canceling appointment with ID 20
+Viewing all scheduled appointments:
 {
-    "message": "Appointment 20 canceled.",
+    "appointments": [
+        {
+            "date": "2025-02-26",
+            "id": 11,
+            "p_id": 123,
+            "patient": "John Doe",
+            "time": "10:00"
+        }
+    ]
+}
+
+ Canceling appointment with ID 11
+{
+    "message": "Appointment 11 canceled.",
     "status": "success"
 }
 
